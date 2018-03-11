@@ -1,5 +1,6 @@
 (ns rest-cljer.core
-  (:require [cheshire.core :as json]
+  (:require [rest-cljer.server :as server]
+            [cheshire.core :as json]
             [clojure.data :refer [diff]]
             [clojure.java.io :refer [input-stream]]
             [environ.core :refer [env]])

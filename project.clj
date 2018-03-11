@@ -6,9 +6,11 @@
 
   :dependencies [[cheshire "5.8.0"]
                  [clj-http "3.8.0"]
-                 [com.github.rest-driver/rest-client-driver "1.1.42" :exclusions [org.slf4j/slf4j-nop]]
+                 [com.github.rest-driver/rest-client-driver "1.1.42" :exclusions [org.slf4j/slf4j-nop
+                                                                                  org.eclipse.jetty/jetty-server]]
                  [environ "1.1.0"]
                  [junit "4.12"]
+                 [ring/ring-jetty-adapter "1.6.3"]
                  [org.clojure/clojure "1.8.0"]]
 
   :deploy-repositories [["releases" :clojars]]
