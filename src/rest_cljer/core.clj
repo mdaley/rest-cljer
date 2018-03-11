@@ -58,6 +58,10 @@
   (proxy [StringBodyCapture clojure.lang.IFn] []
     (invoke [] (proxy-super getContent))))
 
+(defn json-capture []
+  (proxy [StringBodyCapture clojure.lang.IFn] []
+    (invoke [] (json/parse-string (proxy-super getContent) true))))
+
 (defn add-param! [request param-name param-vals]
   (doseq [v param-vals]
     (.withParam request (name param-name) v)))
@@ -84,14 +88,14 @@
         times (.times expectation times)))
 
 (defn add-header! [r [k v]]
-  (.withHeader r k v))
+  (.withHeader r (name k) v))
 
 (defn add-headers [r headers]
   (doseq [h headers]
     (add-header! r h)))
 
 (defn add-absent-header! [r k]
-  (.withoutHeader r k))
+  (.withoutHeader r (name k)))
 
 (defn add-after  [r m]
   (when m
@@ -132,10 +136,20 @@
     (ClientDriverRequest$Method/custom method)
     ((or method :GET) verbs)))
 
+(defn create-client-driver
+  []
+  (if (env :restdriver-port)
+    (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))
+    (.. (ClientDriverFactory.) (createClientDriver))))
+
+(def ^:dynamic *rest-driver-port*
+  nil)
+
 (defmacro rest-driven
   {:style/indent 1}
   ([pairs & body]
-     `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer/valueOf (env :restdriver-port))))]
+   `(let [driver# (create-client-driver)]
+      (binding [*rest-driver-port* (.getPort driver#)]
         (try
           (doseq [pair# (partition 2 (flatten ~pairs))]
             (let [request# (first pair#)
@@ -160,8 +174,9 @@
               (let [expectation# (.addExpectation driver# on-request# give-response#)]
                 (add-times expectation# (:times response#)))))
 
-          ~@body
+          (let [body-value# (do ~@body)]
+            (.verify driver#)
 
-          (.verify driver#)
+            body-value#)
 
-          (finally (.shutdownQuietly driver#))))))
+          (finally (.shutdownQuietly driver#)))))))

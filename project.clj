@@ -11,9 +11,8 @@
                  [junit "4.12"]
                  [org.clojure/clojure "1.8.0"]]
 
-  :lein-release {:deploy-via :clojars}
+  :deploy-repositories [["releases" :clojars]]
 
-  :profiles {:dev {:plugins [[pjstadig/humane-test-output "0.8.1"]
-                             [lein-release "1.0.5"]
+  :profiles {:dev {:plugins [[pjstadig/humane-test-output "0.8.2"]
                              [lein-rpm "0.0.4"]]
                    :dependencies [[speclj "3.3.2"]]}})
