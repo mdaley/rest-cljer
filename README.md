@@ -26,7 +26,7 @@ An example of clojure test usage:
 (deftest example-of-a-test
   (rest-driven [{:method :GET :url "/gety"}
                 {:status 200}]
-    (is (= 200 (:status (http/get "/gety"l))))))
+    (is (= 200 (:status (http/get "http://localhost:8081/gety"l))))))
 ```
 
 An example of midje usage.
