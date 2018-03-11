@@ -183,9 +183,9 @@
   (let [resource-path "/some/resource/path"]
     (rest-driven [{:method :POST
                    :url resource-path
-                   :headers {:from "midjefact" :with "value"}}
+                   :headers {:from "myfrom" :with "value"}}
                   {:status 204}]
-      (is (= 204 (:status (http/post (local-path resource-path) {:headers {"from" "midjefact"
+      (is (= 204 (:status (http/post (local-path resource-path) {:headers {"from" "myfrom"
                                                                                       "with" "value"}})))))))
 
 (deftest rest-driven-call-with-missing-header-throws-exception
